@@ -15,6 +15,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.activity.compose.BackHandler
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,11 +36,29 @@ fun AppRegisterScreen(
     var phoneOrEmail by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    BackHandler {
+        viewModel.setAppStage(AppStage.WELCOME)
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(Brush.verticalGradient(listOf(ColorMaroon, ColorRoyal, ColorDeep)))
     ) {
+        IconButton(
+            onClick = { viewModel.setAppStage(AppStage.WELCOME) },
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(12.dp)
+                .align(Alignment.TopStart)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                tint = ColorGold2
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -153,7 +174,7 @@ fun AppRegisterScreen(
 
             TextButton(onClick = onNavigateToLogin) {
                 Text(
-                    text = "पपहले से खाता है? लॉगिन करें",
+                    text = "पहले से खाता है? लॉगिन करें",
                     color = ColorGold2,
                     fontWeight = FontWeight.SemiBold
                 )

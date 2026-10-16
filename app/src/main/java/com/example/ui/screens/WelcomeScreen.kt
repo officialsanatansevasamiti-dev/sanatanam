@@ -187,7 +187,7 @@ fun WelcomeScreen(
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedButton(
-                onClick = { showLoginDialog = true },
+                onClick = { viewModel.setAppStage(AppStage.LOGIN) },
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 shape = RoundedCornerShape(14.dp),
                 border = androidx.compose.foundation.BorderStroke(1.2.dp, ColorGold.copy(alpha = 0.8f))
@@ -203,18 +203,6 @@ fun WelcomeScreen(
             Text(text = "सेवा ही परमो धर्मः", style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, color = ColorGold2))
             Text(text = "समर्पित राष्ट्र एवं सनातन धर्म सेवा", style = MaterialTheme.typography.labelSmall.copy(color = ColorWhite.copy(alpha = 0.65f)))
             Text(text = "An initiative by Sanatan Seva Samiti • DG Developers (Deep Group)", style = MaterialTheme.typography.labelSmall.copy(color = ColorWhite.copy(alpha = 0.45f), fontSize = 10.sp))
-        }
-
-        if (showLoginDialog) {
-            LoginDialog(
-                onDismiss = { showLoginDialog = false },
-                onSuccessLogin = { name ->
-                    showLoginDialog = false
-                    viewModel.loginUser(name)
-                    Toast.makeText(context, "स्वागत है, $name!", Toast.LENGTH_SHORT).show()
-                    viewModel.setAppStage(AppStage.MAIN_APP)
-                }
-            )
         }
     }
 }

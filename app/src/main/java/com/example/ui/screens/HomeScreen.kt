@@ -76,3 +76,11 @@ fun AppHomeScreen(
         }
     }
 }
+
+@Composable
+fun HomeScreen(
+    viewModel: MainViewModel,
+    modifier: Modifier = Modifier
+) {
+    AppHomeScreen(viewModel = viewModel, modifier = modifier)
+}

@@ -22,6 +22,8 @@ import kotlinx.coroutines.flow.stateIn
 enum class AppStage {
     SPLASH,
     WELCOME,
+    LOGIN,
+    REGISTER,
     MAIN_APP
 }
 

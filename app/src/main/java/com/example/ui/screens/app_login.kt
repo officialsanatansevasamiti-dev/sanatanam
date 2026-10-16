@@ -17,6 +17,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.activity.compose.BackHandler
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,11 +37,29 @@ fun AppLoginScreen(
     var emailOrPhone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    BackHandler {
+        viewModel.setAppStage(AppStage.WELCOME)
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(Brush.verticalGradient(listOf(ColorMaroon, ColorRoyal, ColorDeep)))
     ) {
+        IconButton(
+            onClick = { viewModel.setAppStage(AppStage.WELCOME) },
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(12.dp)
+                .align(Alignment.TopStart)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                tint = ColorGold2
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -132,7 +152,7 @@ fun AppLoginScreen(
                 shape = RoundedCornerShape(14.dp),
                 border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold2)
             ) {
-                Text("لogin करें (Firebase Connected)", fontWeight = FontWeight.Bold, color = ColorWhite)
+                Text("लॉगिन करें (Login)", fontWeight = FontWeight.Bold, color = ColorWhite)
             }
 
             Spacer(modifier = Modifier.height(14.dp))

@@ -41,6 +41,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ui.components.ContentReaderSheet
 import com.example.ui.components.SacredTopBar
 import com.example.ui.screens.AboutSamitiScreen
+import com.example.ui.screens.AppLoginScreen
+import com.example.ui.screens.AppRegisterScreen
 import com.example.ui.screens.HomeScreen
 import com.example.ui.screens.JapaScreen
 import com.example.ui.screens.MandirScreen
@@ -86,6 +88,14 @@ fun ShriSanatanamRoot(viewModel: MainViewModel) {
         when (stage) {
             AppStage.SPLASH -> SplashScreen(viewModel = viewModel)
             AppStage.WELCOME -> WelcomeScreen(viewModel = viewModel)
+            AppStage.LOGIN -> AppLoginScreen(
+                viewModel = viewModel,
+                onNavigateToRegister = { viewModel.setAppStage(AppStage.REGISTER) }
+            )
+            AppStage.REGISTER -> AppRegisterScreen(
+                viewModel = viewModel,
+                onNavigateToLogin = { viewModel.setAppStage(AppStage.LOGIN) }
+            )
             AppStage.MAIN_APP -> ShriSanatanamApp(viewModel = viewModel)
         }
     }
