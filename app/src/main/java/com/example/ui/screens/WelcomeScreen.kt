@@ -29,9 +29,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -64,17 +62,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.R
-import com.example.ui.theme.BhagwaContainer
-import com.example.ui.theme.BhagwaDark
-import com.example.ui.theme.BhagwaPrimary
-import com.example.ui.theme.ChandanCard
-import com.example.ui.theme.ChandanCream
-import com.example.ui.theme.DivineGreen
-import com.example.ui.theme.KumkumRed
-import com.example.ui.theme.SwarnaGold
-import com.example.ui.theme.SwarnaGoldLight
 import com.example.viewmodel.AppStage
 import com.example.viewmodel.MainViewModel
+
+// Exact Color Scheme from specification
+val ColorDeep = Color(0xFF170105)
+val ColorMaroon = Color(0xFF39040B)
+val ColorRoyal = Color(0xFF650711)
+val ColorBhagwa = Color(0xFFA92808)
+val ColorGold = Color(0xFFDCA72F)
+val ColorGold2 = Color(0xFFFFD866)
+val ColorGold3 = Color(0xFFFFF0A8)
+val ColorWhite = Color(0xFFFFFFFF)
 
 data class WelcomeFeatureCard(
     val titleHindi: String,
@@ -98,28 +97,28 @@ fun WelcomeScreen(
             titleEnglish = "Daily Aarti & Chalisa",
             description = "सम्पूर्ण हनुमान चालीसा, आरती कुञ्जबिहारी की, गणेश आरती एवं शिव तांडव स्तोत्र सहित शुद्ध पाठ व घंटी ताल।",
             iconEmoji = "🪔",
-            accentColor = BhagwaPrimary
+            accentColor = ColorGold2
         ),
         WelcomeFeatureCard(
             titleHindi = "दर्शन, पूजा घर व भजन",
             titleEnglish = "Live Darshan & Bhajans",
             description = "सजीव अखण्ड दीप, धूप, पुष्प वर्षा और शंख नाद के साथ अपने मोबाइल में मन्दिर गर्भगृह का अनुभव।",
             iconEmoji = "🛕",
-            accentColor = Color(0xFFD84315)
+            accentColor = ColorBhagwa
         ),
         WelcomeFeatureCard(
             titleHindi = "पंचांग व सनातन उत्सव",
             titleEnglish = "Panchang & Sanatan Calendar",
             description = "विक्रम संवत २०८३, दैनिक तिथि, नक्षत्र, अभिजीत मुहूर्त, राहुकाल एवं समस्त सनातन व्रतों की सम्पूर्ण विधि।",
             iconEmoji = "📅",
-            accentColor = Color(0xFF0277BD)
+            accentColor = Color(0xFFE57373)
         ),
         WelcomeFeatureCard(
             titleHindi = "१०८ मनका जाप माला",
             titleEnglish = "108 Japa Mala Counter",
             description = "लकड़ी के मनके की प्रामाणिक ध्वनि, हैप्टिक स्पर्श और लक्ष्य निर्धारण के साथ दिव्य नाम जप।",
             iconEmoji = "📿",
-            accentColor = DivineGreen
+            accentColor = Color(0xFF81C784)
         )
     )
 
@@ -129,9 +128,9 @@ fun WelcomeScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        ChandanCream,
-                        Color(0xFFFFF6E6),
-                        Color(0xFFFFECD2)
+                        ColorMaroon,
+                        ColorRoyal,
+                        ColorDeep
                     )
                 )
             )
@@ -148,75 +147,223 @@ fun WelcomeScreen(
         ) {
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Header: Official logo.png (1:1 aspect ratio, perfectly scaled without distortion)
-            Box(
-                modifier = Modifier
-                    .size(110.dp)
-                    .clip(RoundedCornerShape(22.dp))
-                    .background(Color.White)
-                    .border(2.5.dp, SwarnaGold, RoundedCornerShape(22.dp))
-                    .padding(6.dp),
-                contentAlignment = Alignment.Center
+            // Dual Brand Emblems: App Logo & Sanatan Seva Samiti (SSS) Logo
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "SHRI SANATANAM Logo",
+                // Official Sanatan Seva Samiti Logo (assets/sss.png)
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.Fit
-                )
+                        .size(86.dp)
+                        .clip(CircleShape)
+                        .background(ColorWhite)
+                        .border(2.dp, ColorGold, CircleShape)
+                        .padding(3.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.sss),
+                        contentDescription = "Sanatan Seva Samiti Logo",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                // Official App Logo (assets/logo.png)
+                Box(
+                    modifier = Modifier
+                        .size(96.dp)
+                        .clip(CircleShape)
+                        .background(ColorWhite)
+                        .border(2.5.dp, ColorGold2, CircleShape)
+                        .padding(4.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = "SHRI SANATANAM Logo",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-            // App Title: "SHRI SANATANAM"
+            // Motto Badge: ✦ जय भवानी ✦
+            Surface(
+                color = ColorMaroon.copy(alpha = 0.9f),
+                shape = RoundedCornerShape(999.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold.copy(alpha = 0.6f))
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 18.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "✦", color = ColorGold2, fontSize = 11.sp)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "जय भवानी",
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            color = ColorGold3,
+                            fontWeight = FontWeight.ExtraBold,
+                            letterSpacing = 0.7.sp
+                        )
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = "✦", color = ColorGold2, fontSize = 11.sp)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Brand Titles
             Text(
-                text = "SHRI SANATANAM",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.ExtraBold,
-                    color = BhagwaDark,
-                    letterSpacing = 1.2.sp,
+                text = "sanatanam",
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.Black,
+                    color = ColorWhite,
+                    letterSpacing = (-1.5).sp,
                     textAlign = TextAlign.Center
                 )
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
-
-            // Tagline: "॥ धर्मो रक्षति रक्षितः ॥"
-            Surface(
-                color = BhagwaContainer,
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                Text(
-                    text = "॥ धर्मो रक्षति रक्षितः ॥",
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        color = KumkumRed,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-            }
-
-            Spacer(modifier = Modifier.height(6.dp))
-
             Text(
-                text = "आपकी दैनिक आध्यात्मिक यात्रा में आपका स्वागत है\nWelcome to your daily spiritual journey",
-                style = MaterialTheme.typography.bodySmall.copy(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    lineHeight = 18.sp
+                text = "सनातन सेवा समिति",
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.ExtraBold,
+                    color = ColorGold2,
+                    letterSpacing = 0.5.sp,
+                    textAlign = TextAlign.Center
                 )
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "SANATAN SEVA SAMITI",
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    color = ColorWhite.copy(alpha = 0.6f),
+                    letterSpacing = 3.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            // Sacred Darshan Cards: Devi Ji Asset & Guru Ji Asset
+            Text(
+                text = "पावन दर्शन एवं आशीर्वाद",
+                style = MaterialTheme.typography.titleSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = ColorGold2
+                ),
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Devi Ji Asset Card (assets/devi.png)
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(160.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = ColorDeep),
+                    border = androidx.compose.foundation.BorderStroke(1.2.dp, ColorGold.copy(alpha = 0.7f))
+                ) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Image(
+                            painter = painterResource(id = R.drawable.devi),
+                            contentDescription = "Devi Ji Asset",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.verticalGradient(
+                                        colors = listOf(
+                                            Color.Transparent,
+                                            Color(0xCC170105)
+                                        )
+                                    )
+                                )
+                        )
+                        Text(
+                            text = "माँ भगवती दर्शन",
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(8.dp),
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = ColorGold2
+                            )
+                        )
+                    }
+                }
+
+                // Guru Ji Asset Card (assets/guru.png)
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(160.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = ColorDeep),
+                    border = androidx.compose.foundation.BorderStroke(1.2.dp, ColorGold.copy(alpha = 0.7f))
+                ) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Image(
+                            painter = painterResource(id = R.drawable.guru),
+                            contentDescription = "Guru Ji Asset",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.verticalGradient(
+                                        colors = listOf(
+                                            Color.Transparent,
+                                            Color(0xCC170105)
+                                        )
+                                    )
+                                )
+                        )
+                        Text(
+                            text = "गुरुदेव आशीर्वाद",
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(8.dp),
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = ColorGold2
+                            )
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
 
             // Feature Highlights Slider / Cards
             Text(
-                text = "प्रमुख आध्यात्मिक विशेषताएं",
+                text = "प्रमुख आध्यात्मिक सेवाएं",
                 style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Bold,
-                    color = BhagwaDark
+                    color = ColorGold2
                 ),
                 modifier = Modifier.align(Alignment.Start)
             )
@@ -233,8 +380,8 @@ fun WelcomeScreen(
                             .width(260.dp)
                             .testTag("feature_card_${feat.titleEnglish}"),
                         shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                        border = androidx.compose.foundation.BorderStroke(1.dp, feat.accentColor.copy(alpha = 0.4f)),
+                        colors = CardDefaults.cardColors(containerColor = ColorMaroon.copy(alpha = 0.85f)),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold.copy(alpha = 0.4f)),
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                     ) {
                         Column(
@@ -244,19 +391,19 @@ fun WelcomeScreen(
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(44.dp)
+                                    .size(42.dp)
                                     .clip(CircleShape)
-                                    .background(feat.accentColor.copy(alpha = 0.15f)),
+                                    .background(ColorDeep),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(text = feat.iconEmoji, fontSize = 22.sp)
+                                Text(text = feat.iconEmoji, fontSize = 20.sp)
                             }
                             Spacer(modifier = Modifier.height(10.dp))
                             Text(
                                 text = feat.titleHindi,
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold,
-                                    color = BhagwaDark
+                                    color = ColorWhite
                                 )
                             )
                             Text(
@@ -270,7 +417,7 @@ fun WelcomeScreen(
                             Text(
                                 text = feat.description,
                                 style = MaterialTheme.typography.bodySmall.copy(
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    color = ColorWhite.copy(alpha = 0.8f),
                                     lineHeight = 17.sp
                                 )
                             )
@@ -279,7 +426,7 @@ fun WelcomeScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(26.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Action Buttons
             // 1. Primary Button: "प्रारंभ करें / Get Started"
@@ -292,9 +439,9 @@ fun WelcomeScreen(
                     .fillMaxWidth()
                     .height(52.dp)
                     .testTag("btn_get_started"),
-                colors = ButtonDefaults.buttonColors(containerColor = BhagwaPrimary),
+                colors = ButtonDefaults.buttonColors(containerColor = ColorBhagwa),
                 shape = RoundedCornerShape(14.dp),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 3.dp)
+                border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold2)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -304,14 +451,14 @@ fun WelcomeScreen(
                         text = "प्रारंभ करें / Get Started",
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = ColorWhite
                         )
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = "आगे बढ़ें",
-                        tint = Color.White
+                        tint = ColorGold2
                     )
                 }
             }
@@ -326,7 +473,7 @@ fun WelcomeScreen(
                     .height(50.dp)
                     .testTag("btn_welcome_login"),
                 shape = RoundedCornerShape(14.dp),
-                border = androidx.compose.foundation.BorderStroke(1.2.dp, BhagwaPrimary)
+                border = androidx.compose.foundation.BorderStroke(1.2.dp, ColorGold.copy(alpha = 0.8f))
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -335,7 +482,7 @@ fun WelcomeScreen(
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = "Login",
-                        tint = BhagwaPrimary,
+                        tint = ColorGold2,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -343,24 +490,39 @@ fun WelcomeScreen(
                         text = "लॉगिन / Sign In (Firebase & Custom API)",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.SemiBold,
-                            color = BhagwaPrimary
+                            color = ColorGold2
                         )
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
             // Mandatory Footer
             Text(
+                text = "सेवा ही परमो धर्मः",
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = ColorGold2
+                )
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = "समर्पित राष्ट्र एवं सनातन धर्म सेवा",
+                style = MaterialTheme.typography.labelSmall.copy(
+                    color = ColorWhite.copy(alpha = 0.65f)
+                )
+            )
+            Spacer(modifier = Modifier.height(3.dp))
+            Text(
                 text = "An initiative by Sanatan Seva Samiti • DG Developers (Deep Group)",
                 style = MaterialTheme.typography.labelSmall.copy(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center
+                    color = ColorWhite.copy(alpha = 0.45f),
+                    fontSize = 10.sp
                 )
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(14.dp))
         }
 
         // Login Dialog (Firebase / Custom API)
@@ -392,7 +554,8 @@ fun LoginDialog(
                 .padding(8.dp)
                 .testTag("dialog_login"),
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            colors = CardDefaults.cardColors(containerColor = ColorDeep),
+            border = androidx.compose.foundation.BorderStroke(1.2.dp, ColorGold)
         ) {
             Column(
                 modifier = Modifier
@@ -409,11 +572,11 @@ fun LoginDialog(
                         text = "सनातन भक्त लॉगिन",
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
-                            color = BhagwaDark
+                            color = ColorGold2
                         )
                     )
                     IconButton(onClick = onDismiss) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "बंद करें")
+                        Icon(imageVector = Icons.Default.Close, contentDescription = "बंद करें", tint = ColorWhite)
                     }
                 }
 
@@ -424,8 +587,8 @@ fun LoginDialog(
                     modifier = Modifier
                         .size(54.dp)
                         .clip(CircleShape)
-                        .background(Color.White)
-                        .border(1.5.dp, SwarnaGold, CircleShape),
+                        .background(ColorWhite)
+                        .border(1.5.dp, ColorGold, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
@@ -444,13 +607,15 @@ fun LoginDialog(
                 OutlinedTextField(
                     value = devoteeName,
                     onValueChange = { devoteeName = it },
-                    label = { Text("भक्त का नाम (Devotee Name)") },
+                    label = { Text("भक्त का नाम (Devotee Name)", color = ColorGold3) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = BhagwaPrimary,
-                        unfocusedBorderColor = Color.LightGray
+                        focusedBorderColor = ColorGold2,
+                        unfocusedBorderColor = ColorGold.copy(alpha = 0.5f),
+                        focusedTextColor = ColorWhite,
+                        unfocusedTextColor = ColorWhite
                     )
                 )
 
@@ -460,13 +625,15 @@ fun LoginDialog(
                 OutlinedTextField(
                     value = phoneNumber,
                     onValueChange = { phoneNumber = it },
-                    label = { Text("मोबाइल नंबर / ईमेल") },
+                    label = { Text("मोबाइल नंबर / ईमेल (Firebase / Custom API)", color = ColorGold3) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = BhagwaPrimary,
-                        unfocusedBorderColor = Color.LightGray
+                        focusedBorderColor = ColorGold2,
+                        unfocusedBorderColor = ColorGold.copy(alpha = 0.5f),
+                        focusedTextColor = ColorWhite,
+                        unfocusedTextColor = ColorWhite
                     )
                 )
 
@@ -475,16 +642,17 @@ fun LoginDialog(
                 // Login via Firebase/Custom API Button
                 Button(
                     onClick = {
-                        val name = if (devoteeName.isNotBlank()) devoteeName else "भक्त"
+                        val name = if (devoteeName.isNotBlank()) devoteeName else "सनातन भक्त"
                         onSuccessLogin(name)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = BhagwaPrimary),
-                    shape = RoundedCornerShape(12.dp)
+                    colors = ButtonDefaults.buttonColors(containerColor = ColorBhagwa),
+                    shape = RoundedCornerShape(12.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold2)
                 ) {
-                    Text("लॉगिन करें (Firebase Connected)", fontWeight = FontWeight.Bold)
+                    Text("लॉगिन करें (Firebase Connected)", fontWeight = FontWeight.Bold, color = ColorWhite)
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -497,9 +665,10 @@ fun LoginDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(46.dp),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold.copy(alpha = 0.7f))
                 ) {
-                    Text("बिना लॉगिन आगे बढ़ें (Guest Mode)", color = BhagwaDark)
+                    Text("बिना लॉगिन आगे बढ़ें (Guest Mode)", color = ColorGold2)
                 }
             }
         }

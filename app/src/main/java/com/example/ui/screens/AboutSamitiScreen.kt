@@ -88,22 +88,49 @@ fun AboutSamitiScreen(
                     .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
-                        .background(Color.White)
-                        .border(2.5.dp, SwarnaGoldLight, CircleShape),
-                    contentAlignment = Alignment.Center
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    androidx.compose.foundation.Image(
-                        painter = androidx.compose.ui.res.painterResource(id = com.example.R.drawable.logo),
-                        contentDescription = "श्री सनातनम् Logo",
+                    Box(
                         modifier = Modifier
                             .size(76.dp)
-                            .clip(CircleShape),
-                        contentScale = androidx.compose.ui.layout.ContentScale.Crop
-                    )
+                            .clip(CircleShape)
+                            .background(Color.White)
+                            .border(2.5.dp, SwarnaGoldLight, CircleShape)
+                            .padding(2.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        androidx.compose.foundation.Image(
+                            painter = androidx.compose.ui.res.painterResource(id = com.example.R.drawable.sss),
+                            contentDescription = "सनातन सेवा समिति Logo",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape),
+                            contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Box(
+                        modifier = Modifier
+                            .size(76.dp)
+                            .clip(CircleShape)
+                            .background(Color.White)
+                            .border(2.5.dp, SwarnaGoldLight, CircleShape)
+                            .padding(2.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        androidx.compose.foundation.Image(
+                            painter = androidx.compose.ui.res.painterResource(id = com.example.R.drawable.logo),
+                            contentDescription = "श्री सनातनम् Logo",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape),
+                            contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
