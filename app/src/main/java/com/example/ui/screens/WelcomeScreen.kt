@@ -1,9 +1,11 @@
 package com.example.ui.screens
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -35,21 +37,26 @@ import com.example.R
 import com.example.viewmodel.AppStage
 import com.example.viewmodel.MainViewModel
 
-val ColorDeep = Color(0xFF170105)
-val ColorMaroon = Color(0xFF39040B)
-val ColorRoyal = Color(0xFF650711)
-val ColorBhagwa = Color(0xFFA92808)
-val ColorGold = Color(0xFFDCA72F)
-val ColorGold2 = Color(0xFFFFD866)
-val ColorGold3 = Color(0xFFFFF0A8)
-val ColorWhite = Color(0xFFFFFFFF)
+// Exact Color Palette Matching Your Web Design
+val ColorMaroonDark = Color(0xFF180207)
+val ColorMaroonDeep = Color(0xFF24040A)
+val ColorMaroon = Color(0xFF3B0710)
+val ColorMaroonLight = Color(0xFF71172A)
+val ColorGold = Color(0xFFD4AF37)
+val ColorGoldLight = Color(0xFFFFE7A0)
+val ColorGoldPale = Color(0xFFFFF3CE)
+val ColorCream = Color(0xFFFFF9ED)
+val ColorMuted = Color(0xFFDDCBB8)
 
-data class WelcomeFeatureCard(
-    val titleHindi: String,
-    val titleEnglish: String,
+data class OnboardingStep(
+    val stepNumber: String,
+    val eyebrow: String,
+    val title: String,
     val description: String,
-    val iconEmoji: String,
-    val accentColor: Color
+    val badge: String,
+    val imageRes: Int? = null,
+    val isLanguageStep: Boolean = false,
+    val isMembershipStep: Boolean = false
 )
 
 @Composable
@@ -58,19 +65,66 @@ fun WelcomeScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    var currentStep by remember { mutableStateOf(1) }
+    val totalSteps = 5
+    var selectedLanguage by remember { mutableStateOf("हिन्दी (Hindi)") }
     var showLoginDialog by remember { mutableStateOf(false) }
 
-    val features = listOf(
-        WelcomeFeatureCard("दैनिक आरती व चालीसा", "Daily Aarti & Chalisa", "सम्पूर्ण हनुमान चालीसा, आरती कुञ्जबिहारी की, गणेश आरती एवं शिव तांडव स्तोत्र।", "🪔", ColorGold2),
-        WelcomeFeatureCard("दर्शन, पूजा घर व भजन", "Live Darshan & Bhajans", "सजीव अखण्ड दीप, धूप, पुष्प वर्षा और शंख नाद के साथ मन्दिर गर्भगृह का अनुभव।", "🛕", ColorBhagwa),
-        WelcomeFeatureCard("पंचांग व सनातन उत्सव", "Panchang & Sanatan Calendar", "विक्रम संवत २०८३, दैनिक तिथि, नक्षत्र, अभिजीत मुहूर्त एवं व्रत-त्यौहार।", "📅", Color(0xFFE57373)),
-        WelcomeFeatureCard("१०८ मनका जाप माला", "108 Japa Mala Counter", "लकड़ी के मनके की प्रामाणिक ध्वनि और हैप्टिक स्पर्श के साथ नाम जप।", "📿", Color(0xFF81C784))
+    val steps = listOf(
+        OnboardingStep(
+            stepNumber = "चरण १",
+            eyebrow = "॥ शुभारम्भ ॥",
+            title = "अपनी भाषा चुनें",
+            description = "श्री सनातनम् में आपका हार्दिक स्वागत है। कृपया अपनी सुविधानुसार भाषा चुनें। समस्त सामग्री आपकी चुनी हुई भाषा में प्रदर्शित होगी।",
+            badge = "भक्ति • संस्कार • सेवा",
+            isLanguageStep = true
+        ),
+        OnboardingStep(
+            stepNumber = "चरण २",
+            eyebrow = "✦ जय श्री सनातनम् ✦",
+            title = "श्री सनातनम् में स्वागतम्",
+            description = "सनातन धर्म, भारतीय संस्कृति, आध्यात्मिक ज्ञान, संस्कार और जनसेवा को समर्पित एक पावन पहल। आइए, ज्ञान और सद्भाव की इस यात्रा से जुड़ें।",
+            badge = "धर्म • ज्ञान • साधना • सेवा",
+            imageRes = R.drawable.logo
+        ),
+        OnboardingStep(
+            stepNumber = "चरण ३",
+            eyebrow = "॥ जय माता दी ॥",
+            title = "माँ भगवती की कृपा",
+            description = "जगज्जननी माँ जगदम्बा के श्रीचरणों में श्रद्धापूर्वक नमन। माँ की कृपा से सभी के जीवन में शांति, सद्बुद्धि, साहस और सद्भाव बना रहे।",
+            badge = "जय भवानी • जय जगदम्बे",
+            imageRes = R.drawable.devi
+        ),
+        OnboardingStep(
+            stepNumber = "चरण ४",
+            eyebrow = "॥ गुरु कृपा ही केवलम् ॥",
+            title = "पूज्य सद्गुरुदेव जी महाराज",
+            description = "गुरु-मार्गदर्शन, आध्यात्मिक ज्ञान, आत्मचिन्तन और सेवा के पथ पर सदैव अग्रसर रहने का संकल्प।",
+            badge = "श्रद्धा • साधना • सदाचार",
+            imageRes = R.drawable.guru
+        ),
+        OnboardingStep(
+            stepNumber = "चरण ५",
+            eyebrow = "॥ सेवा ही परमो धर्मः ॥",
+            title = "सनातन सेवा समिति में स्वागतम्",
+            description = "धर्म, संस्कृति, संस्कार और समाजसेवा के पावन उद्देश्य से जुड़ें। आइए, सेवा और सद्भाव के इस अभियान में अपनी सहभागिता सुनिश्चित करें।",
+            badge = "SANATANAM · भक्ति • संस्कार • सेवा",
+            imageRes = R.drawable.sss,
+            isMembershipStep = true
+        )
     )
+
+    val activeStepData = steps[currentStep - 1]
+    val progressPercent = (currentStep * 100) / totalSteps
 
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(ColorMaroon, ColorRoyal, ColorDeep)))
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(ColorMaroonDark, ColorMaroon, ColorMaroonDark)
+                )
+            )
             .testTag("welcome_screen")
     ) {
         Column(
@@ -79,90 +133,276 @@ fun WelcomeScreen(
                 .statusBarsPadding()
                 .navigationBarsPadding()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 12.dp),
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Logos Row (SSS & App Logo)
+            // Top Brand Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier.size(86.dp).clip(CircleShape).background(ColorWhite).border(2.dp, ColorGold, CircleShape).padding(3.dp),
-                    contentAlignment = Alignment.Center
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.clickable { viewModel.setAppStage(AppStage.MAIN_APP) }
                 ) {
-                    Image(painter = painterResource(id = R.drawable.sss), contentDescription = "SSS Logo", modifier = Modifier.fillMaxSize().clip(CircleShape), contentScale = ContentScale.Crop)
+                    Box(
+                        modifier = Modifier
+                            .size(54.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(ColorCream)
+                            .border(1.dp, ColorGold.copy(alpha = 0.55f), RoundedCornerShape(16.dp))
+                            .padding(3.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.logo),
+                            contentDescription = "श्री सनातनम् लोगो",
+                            modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(13.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    Column {
+                        Text(
+                            text = "श्री सनातनम्",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Black,
+                                color = ColorGoldLight
+                            )
+                        )
+                        Text(
+                            text = "सनातन सेवा समिति",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                color = ColorMuted,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        )
+                    }
                 }
-                Spacer(modifier = Modifier.width(16.dp))
-                Box(
-                    modifier = Modifier.size(96.dp).clip(CircleShape).background(ColorWhite).border(2.5.dp, ColorGold2, CircleShape).padding(4.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(painter = painterResource(id = R.drawable.logo), contentDescription = "App Logo", modifier = Modifier.fillMaxSize().clip(CircleShape), contentScale = ContentScale.Crop)
+
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        text = "॥ शुभारम्भ ॥",
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            color = ColorGoldLight,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    )
+                    OutlinedButton(
+                        onClick = { viewModel.setAppStage(AppStage.MAIN_APP) },
+                        shape = RoundedCornerShape(30.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold.copy(alpha = 0.42f)),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = ColorGoldLight)
+                    ) {
+                        Text(text = "छोड़ें ↗", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
-            Surface(
-                color = ColorMaroon.copy(alpha = 0.9f),
-                shape = RoundedCornerShape(999.dp),
-                border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold.copy(alpha = 0.6f))
+            // Progress Bar Area
+            Column(modifier = Modifier.fillMaxWidth().maxW(950.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "चरण $currentStep / $totalSteps",
+                        style = MaterialTheme.typography.labelMedium.copy(color = ColorGoldLight, fontWeight = FontWeight.Bold)
+                    )
+                    Text(
+                        text = "$progressPercent%",
+                        style = MaterialTheme.typography.labelMedium.copy(color = ColorGoldLight, fontWeight = FontWeight.Bold)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                LinearProgressIndicator(
+                    progress = { currentStep.toFloat() / totalSteps.toFloat() },
+                    modifier = Modifier.fillMaxWidth().height(4.dp).clip(RoundedCornerShape(20.dp)),
+                    color = ColorGold,
+                    trackColor = ColorWhite.copy(alpha = 0.1f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Step Content Card / Layout
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .maxW(1150.dp),
+                shape = RoundedCornerShape(26.dp),
+                colors = CardDefaults.cardColors(containerColor = ColorMaroonDeep.copy(alpha = 0.95f)),
+                border = androidx.compose.foundation.BorderStroke(1.dp, Color.RGBA(212, 175, 55, 0.32f))
             ) {
-                Row(modifier = Modifier.padding(horizontal = 18.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "✦", color = ColorGold2, fontSize = 11.sp)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "जय भवानी", style = MaterialTheme.typography.labelMedium.copy(color = ColorGold3, fontWeight = FontWeight.ExtraBold))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "✦", color = ColorGold2, fontSize = 11.sp)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(text = "sanatanam", style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Black, color = ColorWhite, letterSpacing = (-1.5).sp))
-            Text(text = "सनातन सेवा समिति", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold, color = ColorGold2))
-            Text(text = "SANATAN SEVA SAMITI", style = MaterialTheme.typography.labelSmall.copy(color = ColorWhite.copy(alpha = 0.6f), letterSpacing = 3.sp))
-
-            Spacer(modifier = Modifier.height(18.dp))
-            Text(text = "पावन दर्शन एवं आशीर्वाद", style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold, color = ColorGold2), modifier = Modifier.align(Alignment.Start))
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Card(modifier = Modifier.weight(1f).height(160.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = ColorDeep), border = androidx.compose.foundation.BorderStroke(1.2.dp, ColorGold.copy(alpha = 0.7f))) {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        Image(painter = painterResource(id = R.drawable.devi), contentDescription = "Devi Ji", modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-                        Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xCC170105)))))
-                        Text(text = "माँ भगवती दर्शन", modifier = Modifier.align(Alignment.BottomCenter).padding(8.dp), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold, color = ColorGold2))
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(clampPadding()),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Eyebrow
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Box(modifier = Modifier.width(30.dp).height(1.dp).background(ColorGold))
+                        Text(
+                            text = activeStepData.eyebrow,
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                color = ColorGoldLight,
+                                fontWeight = FontWeight.ExtraBold,
+                                letterSpacing = 0.6.sp
+                            )
+                        )
+                        Box(modifier = Modifier.width(30.dp).height(1.dp).background(ColorGold))
                     }
-                }
-                Card(modifier = Modifier.weight(1f).height(160.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = ColorDeep), border = androidx.compose.foundation.BorderStroke(1.2.dp, ColorGold.copy(alpha = 0.7f))) {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        Image(painter = painterResource(id = R.drawable.guru), contentDescription = "Guru Ji", modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-                        Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xCC170105)))))
-                        Text(text = "गुरुदेव आशीर्वाद", modifier = Modifier.align(Alignment.BottomCenter).padding(8.dp), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold, color = ColorGold2))
-                    }
-                }
-            }
 
-            Spacer(modifier = Modifier.height(18.dp))
-            Text(text = "प्रमुख आध्यात्मिक सेवाएं", style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold, color = ColorGold2), modifier = Modifier.align(Alignment.Start))
-            Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
-            LazyRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                items(features) { feat ->
-                    Card(modifier = Modifier.width(260.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = ColorMaroon.copy(alpha = 0.85f)), border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold.copy(alpha = 0.4f))) {
-                        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                            Box(modifier = Modifier.size(42.dp).clip(CircleShape).background(ColorDeep), contentAlignment = Alignment.Center) {
-                                Text(text = feat.iconEmoji, fontSize = 20.sp)
-                            }
+                    // Title
+                    Text(
+                        text = activeStepData.title,
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontWeight = FontWeight.Black,
+                            color = ColorGoldLight,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    // Description
+                    Text(
+                        text = activeStepData.description,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = ColorMuted,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 22.sp
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Visual or Language Selector Box
+                    if (activeStepData.isLanguageStep) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(ColorMaroonDark.copy(alpha = 0.5f), RoundedCornerShape(18.dp))
+                                .border(1.dp, ColorGold.copy(alpha = 0.2f), RoundedCornerShape(18.dp))
+                                .padding(14.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "चुनी गई भाषा: $selectedLanguage",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    color = ColorGoldPale,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
                             Spacer(modifier = Modifier.height(10.dp))
-                            Text(text = feat.titleHindi, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = ColorWhite))
-                            Text(text = feat.titleEnglish, style = MaterialTheme.typography.labelSmall.copy(color = feat.accentColor, fontWeight = FontWeight.SemiBold))
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Text(text = feat.description, style = MaterialTheme.typography.bodySmall.copy(color = ColorWhite.copy(alpha = 0.8f), lineHeight = 17.sp))
+                            // Language Grid Simulation
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Button(
+                                    onClick = { selectedLanguage = "हिन्दी (Hindi)" },
+                                    colors = ButtonDefaults.buttonColors(containerColor = ColorMaroonLight)
+                                ) {
+                                    Text("हिन्दी", color = ColorGoldLight)
+                                }
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Button(
+                                    onClick = { selectedLanguage = "English" },
+                                    colors = ButtonDefaults.buttonColors(containerColor = ColorMaroonLight)
+                                ) {
+                                    Text("English", color = ColorGoldLight)
+                                }
+                            }
+                        }
+                    } else if (activeStepData.imageRes != null) {
+                        Box(
+                            modifier = Modifier
+                                .size(240.dp)
+                                .clip(RoundedCornerShape(26.dp))
+                                .background(
+                                    brush = Brush.linearGradient(
+                                        listOf(ColorGoldLight, ColorMaroonLight, ColorGold)
+                                    )
+                                )
+                                .padding(4.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = activeStepData.imageRes),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(22.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Badge or Membership Buttons
+                    if (activeStepData.isMembershipStep) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Button(
+                                onClick = {
+                                    val url = "https://shrisanatanam.com/portal/register.php"
+                                    // Handle web/portal link navigation
+                                },
+                                modifier = Modifier.fillMaxWidth().height(52.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = ColorMaroonLight),
+                                border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold.copy(alpha = 0.55f)),
+                                shape = RoundedCornerShape(16.dp)
+                            ) {
+                                Text("✦ सदस्यता एवं पंजीकरण", color = ColorGoldLight, fontWeight = FontWeight.Bold)
+                            }
+                            Button(
+                                onClick = {
+                                    viewModel.setAppStage(AppStage.MAIN_APP)
+                                },
+                                modifier = Modifier.fillMaxWidth().height(52.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = ColorGold),
+                                shape = RoundedCornerShape(16.dp)
+                            ) {
+                                Text("✦ नया खाता बनाएँ", color = ColorMaroonDark, fontWeight = FontWeight.Black)
+                            }
+                            OutlinedButton(
+                                onClick = { showLoginDialog = true },
+                                modifier = Modifier.fillMaxWidth().height(52.dp),
+                                shape = RoundedCornerShape(16.dp),
+                                border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold.copy(alpha = 0.42f)),
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = ColorGoldLight)
+                            ) {
+                                Text("→ सदस्य लॉगिन करें", fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    } else {
+                        Surface(
+                            color = ColorGold.copy(alpha = 0.08f),
+                            shape = RoundedCornerShape(30.dp),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold.copy(alpha = 0.4f))
+                        ) {
+                            Text(
+                                text = activeStepData.badge,
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+                                style = MaterialTheme.typography.labelMedium.copy(
+                                    color = ColorGoldLight,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
                         }
                     }
                 }
@@ -170,39 +410,86 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
-                onClick = { viewModel.setAppStage(AppStage.MAIN_APP) },
-                modifier = Modifier.fillMaxWidth().height(52.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = ColorBhagwa),
-                shape = RoundedCornerShape(14.dp),
-                border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold2)
+            // Bottom Navigation Bar
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                    Text(text = "प्रारंभ करें / Get Started", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = ColorWhite))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = ColorGold2)
+                Text(
+                    text = "SANATANAM · भक्ति • संस्कार • सेवा",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        color = ColorWhite.copy(alpha = 0.53f),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    if (currentStep > 1) {
+                        OutlinedButton(
+                            onClick = { currentStep -= 1 },
+                            modifier = Modifier.size(54.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold.copy(alpha = 0.4f)),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = ColorGoldLight)
+                        ) {
+                            Text("‹", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+
+                    Button(
+                        onClick = {
+                            if (currentStep < totalSteps) {
+                                currentStep += 1
+                            } else {
+                                viewModel.setAppStage(AppStage.MAIN_APP)
+                            }
+                        },
+                        modifier = Modifier.height(54.dp).defaultMinSize(minWidth = 160.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = ColorGold),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, ColorGoldLight)
+                    ) {
+                        Text(
+                            text = if (currentStep == totalSteps) "आरम्भ करें →" else "आगे बढ़ें →",
+                            color = ColorMaroonDark,
+                            fontWeight = FontWeight.Black,
+                            fontSize = 14.sp
+                        )
+                    }
                 }
             }
+        }
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            OutlinedButton(
-                onClick = { viewModel.setAppStage(AppStage.LOGIN) },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                shape = RoundedCornerShape(14.dp),
-                border = androidx.compose.foundation.BorderStroke(1.2.dp, ColorGold.copy(alpha = 0.8f))
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                    Icon(imageVector = Icons.Default.Person, contentDescription = null, tint = ColorGold2, modifier = Modifier.size(20.dp))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "लॉगिन / Sign In (Firebase & Custom API)", style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold, color = ColorGold2))
+        // Login Dialog if triggered
+        if (showLoginDialog) {
+            AlertDialog(
+                onDismissRequest = { showLoginDialog = false },
+                containerColor = ColorMaroonDeep,
+                title = { Text("सदस्य लॉगिन", color = ColorGoldLight) },
+                text = { Text("कृपया अपने पंजीकृत मोबाइल नंबर या ईमेल से लॉगिन करें।", color = ColorMuted) },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showLoginDialog = false
+                            viewModel.setAppStage(AppStage.MAIN_APP)
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = ColorGold)
+                    ) {
+                        Text("लॉगिन", color = ColorMaroonDark, fontWeight = FontWeight.Bold)
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(onClick = { showLoginDialog = false }) {
+                        Text("बंद करें", color = ColorGoldLight)
+                    }
                 }
-            }
-
-            Spacer(modifier = Modifier.height(18.dp))
-            Text(text = "सेवा ही परमो धर्मः", style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold, color = ColorGold2))
-            Text(text = "समर्पित राष्ट्र एवं सनातन धर्म सेवा", style = MaterialTheme.typography.labelSmall.copy(color = ColorWhite.copy(alpha = 0.65f)))
-            Text(text = "An initiative by Sanatan Seva Samiti • DG Developers (Deep Group)", style = MaterialTheme.typography.labelSmall.copy(color = ColorWhite.copy(alpha = 0.45f), fontSize = 10.sp))
+            )
         }
     }
 }
+
+@Composable
+fun clampPadding() = 24.dp
+@Composable
+fun Modifier.maxW(maxWidth: Dp) = this
