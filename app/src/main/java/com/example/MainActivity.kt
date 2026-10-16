@@ -42,11 +42,11 @@ import com.example.ui.components.ContentReaderSheet
 import com.example.ui.components.SacredTopBar
 import com.example.ui.screens.AboutSamitiScreen
 import com.example.ui.screens.AppLoginScreen
-import com.example.ui.screens.AppRegisterScreen
 import com.example.ui.screens.HomeScreen
 import com.example.ui.screens.JapaScreen
 import com.example.ui.screens.MandirScreen
 import com.example.ui.screens.PanchangScreen
+import com.example.ui.screens.RegisterScreen
 import com.example.ui.screens.SangrahScreen
 import com.example.ui.screens.SplashScreen
 import com.example.ui.screens.WelcomeScreen
@@ -92,9 +92,8 @@ fun ShriSanatanamRoot(viewModel: MainViewModel) {
                 viewModel = viewModel,
                 onNavigateToRegister = { viewModel.setAppStage(AppStage.REGISTER) }
             )
-            AppStage.REGISTER -> AppRegisterScreen(
-                viewModel = viewModel,
-                onNavigateToLogin = { viewModel.setAppStage(AppStage.LOGIN) }
+            AppStage.REGISTER -> RegisterScreen(
+                viewModel = viewModel
             )
             AppStage.MAIN_APP -> ShriSanatanamApp(viewModel = viewModel)
         }

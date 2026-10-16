@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -37,7 +38,7 @@ import com.example.R
 import com.example.viewmodel.AppStage
 import com.example.viewmodel.MainViewModel
 
-// Exact Color Palette Matching Your Web Design
+// Exact Color Palette Matching Design
 val ColorMaroonDark = Color(0xFF180207)
 val ColorMaroonDeep = Color(0xFF24040A)
 val ColorMaroon = Color(0xFF3B0710)
@@ -47,6 +48,14 @@ val ColorGoldLight = Color(0xFFFFE7A0)
 val ColorGoldPale = Color(0xFFFFF3CE)
 val ColorCream = Color(0xFFFFF9ED)
 val ColorMuted = Color(0xFFDDCBB8)
+
+// Shared Color constants for HomeScreen, Login & Register
+val ColorDeep = Color(0xFF170105)
+val ColorRoyal = Color(0xFF650711)
+val ColorBhagwa = Color(0xFFA92808)
+val ColorGold2 = Color(0xFFFFD866)
+val ColorGold3 = Color(0xFFFFF0A8)
+val ColorWhite = Color(0xFFFFFFFF)
 
 data class OnboardingStep(
     val stepNumber: String,
@@ -203,7 +212,7 @@ fun WelcomeScreen(
             Spacer(modifier = Modifier.height(18.dp))
 
             // Progress Bar Area
-            Column(modifier = Modifier.fillMaxWidth().maxW(950.dp)) {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -228,19 +237,17 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Step Content Card / Layout
+            // Step Content Card
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .maxW(1150.dp),
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(26.dp),
                 colors = CardDefaults.cardColors(containerColor = ColorMaroonDeep.copy(alpha = 0.95f)),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color.RGBA(212, 175, 55, 0.32f))
+                border = androidx.compose.foundation.BorderStroke(1.dp, ColorGold.copy(alpha = 0.32f))
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(clampPadding()),
+                        .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // Eyebrow
@@ -304,7 +311,6 @@ fun WelcomeScreen(
                                 )
                             )
                             Spacer(modifier = Modifier.height(10.dp))
-                            // Language Grid Simulation
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.Center
@@ -359,8 +365,7 @@ fun WelcomeScreen(
                         ) {
                             Button(
                                 onClick = {
-                                    val url = "https://shrisanatanam.com/portal/register.php"
-                                    // Handle web/portal link navigation
+                                    viewModel.setAppStage(AppStage.REGISTER)
                                 },
                                 modifier = Modifier.fillMaxWidth().height(52.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = ColorMaroonLight),
@@ -472,7 +477,7 @@ fun WelcomeScreen(
                     Button(
                         onClick = {
                             showLoginDialog = false
-                            viewModel.setAppStage(AppStage.MAIN_APP)
+                            viewModel.setAppStage(AppStage.LOGIN)
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = ColorGold)
                     ) {
@@ -488,8 +493,3 @@ fun WelcomeScreen(
         }
     }
 }
-
-@Composable
-fun clampPadding() = 24.dp
-@Composable
-fun Modifier.maxW(maxWidth: Dp) = this
