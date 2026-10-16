@@ -19,6 +19,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
+enum class AppStage {
+    SPLASH,
+    WELCOME,
+    MAIN_APP
+}
+
 enum class ScreenDestination(val titleHindi: String, val titleEnglish: String) {
     HOME("दैनिक", "Daily"),
     SANGRAH("संग्रह", "Sangrah"),
@@ -32,6 +38,27 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     val soundManager = SpiritualSoundManager(application)
     private val repository = DevotionalRepository()
+
+    // App Initial Flow (Splash -> Welcome -> Main)
+    private val _appStage = MutableStateFlow(AppStage.SPLASH)
+    val appStage: StateFlow<AppStage> = _appStage.asStateFlow()
+
+    fun setAppStage(stage: AppStage) {
+        _appStage.value = stage
+    }
+
+    // User authentication state (Firebase / Custom API)
+    private val _isUserLoggedIn = MutableStateFlow(false)
+    val isUserLoggedIn: StateFlow<Boolean> = _isUserLoggedIn.asStateFlow()
+
+    private val _userDisplayName = MutableStateFlow("सनातन भक्त")
+    val userDisplayName: StateFlow<String> = _userDisplayName.asStateFlow()
+
+    fun loginUser(name: String) {
+        _userDisplayName.value = name.ifBlank { "सनातन भक्त" }
+        _isUserLoggedIn.value = true
+        _appStage.value = AppStage.MAIN_APP
+    }
 
     // Navigation
     private val _currentScreen = MutableStateFlow(ScreenDestination.HOME)

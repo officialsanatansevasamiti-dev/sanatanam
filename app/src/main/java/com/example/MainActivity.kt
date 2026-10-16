@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -45,10 +46,12 @@ import com.example.ui.screens.JapaScreen
 import com.example.ui.screens.MandirScreen
 import com.example.ui.screens.PanchangScreen
 import com.example.ui.screens.SangrahScreen
+import com.example.ui.screens.SplashScreen
+import com.example.ui.screens.WelcomeScreen
 import com.example.ui.theme.BhagwaDark
 import com.example.ui.theme.BhagwaPrimary
 import com.example.ui.theme.MyApplicationTheme
-import com.example.ui.theme.SwarnaGold
+import com.example.viewmodel.AppStage
 import com.example.viewmodel.MainViewModel
 import com.example.viewmodel.ScreenDestination
 
@@ -65,8 +68,25 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 val viewModel: MainViewModel = viewModel()
-                ShriSanatanamApp(viewModel = viewModel)
+                ShriSanatanamRoot(viewModel = viewModel)
             }
+        }
+    }
+}
+
+@Composable
+fun ShriSanatanamRoot(viewModel: MainViewModel) {
+    val appStage by viewModel.appStage.collectAsState()
+
+    AnimatedContent(
+        targetState = appStage,
+        transitionSpec = { fadeIn(tween(450)) togetherWith fadeOut(tween(450)) },
+        label = "app_stage_transition"
+    ) { stage ->
+        when (stage) {
+            AppStage.SPLASH -> SplashScreen(viewModel = viewModel)
+            AppStage.WELCOME -> WelcomeScreen(viewModel = viewModel)
+            AppStage.MAIN_APP -> ShriSanatanamApp(viewModel = viewModel)
         }
     }
 }

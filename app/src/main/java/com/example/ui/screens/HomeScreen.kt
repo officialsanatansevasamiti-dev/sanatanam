@@ -141,38 +141,61 @@ fun HomeScreen(
                         )
                 )
 
-                Column(
+                Row(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Surface(
-                        color = BhagwaPrimary,
-                        shape = RoundedCornerShape(8.dp)
+                    Box(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(CircleShape)
+                            .background(Color.White)
+                            .border(2.dp, SwarnaGoldLight, CircleShape),
+                        contentAlignment = Alignment.Center
                     ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.logo),
+                            contentDescription = "श्री सनातनम्",
+                            modifier = Modifier
+                                .size(52.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Column {
+                        Surface(
+                            color = BhagwaPrimary,
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = "॥ धर्मो रक्षति रक्षितः ॥",
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(3.dp))
                         Text(
-                            text = "॥ धर्मो रक्षति रक्षितः ॥",
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
+                            text = "श्री सनातनम्",
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = SwarnaGoldLight
+                            )
+                        )
+                        Text(
+                            text = "सनातन सेवा समिति द्वारा जन-कल्याणार्थ समर्पित",
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                color = Color(0xFFE0E0E0)
                             )
                         )
                     }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "श्री सनातनम्",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.ExtraBold,
-                            color = SwarnaGoldLight
-                        )
-                    )
-                    Text(
-                        text = "सनातन सेवा समिति द्वारा जन-कल्याणार्थ समर्पित",
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = Color(0xFFE0E0E0)
-                        )
-                    )
                 }
             }
         }

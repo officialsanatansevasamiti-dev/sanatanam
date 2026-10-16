@@ -95,20 +95,22 @@ fun SacredTopBar(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Sacred Emblem / Om Icon
+                // Sacred Official Logo Emblem
                 Box(
                     modifier = Modifier
-                        .size(42.dp)
+                        .size(44.dp)
                         .clip(CircleShape)
-                        .background(SwarnaGold)
+                        .background(Color.White)
                         .border(1.5.dp, SwarnaGoldLight, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "ॐ",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = BhagwaDark
+                    androidx.compose.foundation.Image(
+                        painter = androidx.compose.ui.res.painterResource(id = com.example.R.drawable.logo),
+                        contentDescription = "श्री सनातनम् Logo",
+                        modifier = Modifier
+                            .size(42.dp)
+                            .clip(CircleShape),
+                        contentScale = androidx.compose.ui.layout.ContentScale.Crop
                     )
                 }
 

@@ -90,17 +90,19 @@ fun AboutSamitiScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(68.dp)
+                        .size(80.dp)
                         .clip(CircleShape)
-                        .background(SwarnaGold)
-                        .border(2.dp, SwarnaGoldLight, CircleShape),
+                        .background(Color.White)
+                        .border(2.5.dp, SwarnaGoldLight, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "ॐ",
-                        fontSize = 38.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = BhagwaDark
+                    androidx.compose.foundation.Image(
+                        painter = androidx.compose.ui.res.painterResource(id = com.example.R.drawable.logo),
+                        contentDescription = "श्री सनातनम् Logo",
+                        modifier = Modifier
+                            .size(76.dp)
+                            .clip(CircleShape),
+                        contentScale = androidx.compose.ui.layout.ContentScale.Crop
                     )
                 }
 
@@ -351,6 +353,25 @@ fun AboutSamitiScreen(
                     )
                 }
             }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Revisit Welcome / Intro Flow
+        OutlinedButton(
+            onClick = { viewModel.setAppStage(com.example.viewmodel.AppStage.WELCOME) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("btn_revisit_welcome"),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.OpenInBrowser,
+                contentDescription = "Welcome Screen",
+                tint = BhagwaPrimary
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("परिचय व स्वागत स्क्रीन देखें (View Welcome Screen)", color = BhagwaPrimary)
         }
     }
 }

@@ -38,4 +38,11 @@ class ExampleRobolectricTest {
     assertEquals("DG Developers", samiti.developerName)
     assertEquals("Deep Group", samiti.companyName)
   }
+
+  @Test
+  fun `verify app initial flow stages`() {
+    assertEquals(com.example.viewmodel.AppStage.SPLASH.name, "SPLASH")
+    assertEquals(com.example.viewmodel.AppStage.WELCOME.name, "WELCOME")
+    assertEquals(com.example.viewmodel.AppStage.MAIN_APP.name, "MAIN_APP")
+  }
 }
