@@ -1,0 +1,6 @@
+{
+  "name": "SHRI SANATANAM",
+  "description": "Official devotional & spiritual app by Sanatan Seva Samiti. Features Aarti, Chalisa, Stotra, Daily Panchang, Live Darshan, Japa Mala counter, Virtual Pooja Mandir, Geeta Saar & Bhajans.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
